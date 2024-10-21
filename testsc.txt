@@ -1,0 +1,314 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "ARGON FORNTLINES " .. "V1",
+    SubTitle = "by NIGHTFALL INC",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.Delete-- Used when theres no MinimizeKeybind
+})
+
+--Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
+local Tabs = {
+    Main = Window:AddTab({ Title = "Aim", Icon = "crosshair" }),
+    Visuals = Window:AddTab({ Title = "Visuals", Icon = "eye" }),
+    MISC = Window:AddTab({ Title = "MISC", Icon = "crosshair" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+do
+    Fluent:Notify({
+        Title = "Nightfall",
+        Content = "Warning!",
+        SubContent = "This Script is sill in BETA Expect bugs!!!", -- Optional
+        Duration = 5 -- Set to nil to make the notification not disappear
+    })
+
+
+    
+    Tabs.Main:AddButton({
+        Title = "Silent Aim",
+        Description = "Loads The Silent aim",
+        Callback = function()
+            Window:Dialog({
+                Title = "WARNING",
+                Content = "RIGHTNOW THIS CANNOT BE UNLOADED!",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                           loadstring(game:HttpGet("https://raw.githubusercontent.com/Mix10MaxV2/sigmahub/refs/heads/main/extender"))()
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+ Tabs.MISC:AddButton({
+        Title = "Noclip",
+        Description = "Makes you Noclip",
+        Callback = function()
+            Window:Dialog({
+                Title = "WARNING",
+                Content = "For now u cant undo this!",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                          local folder = workspace:FindFirstChild("workspace") -- Replace with your folder's name
+
+if folder then
+    for _, child in ipairs(folder:GetDescendants()) do
+        if child:IsA("BasePart") then
+            child.CanCollide = false
+        end
+    end
+else
+    warn("Folder not found!")
+end
+
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+  
+  
+Tabs.MISC:AddButton({
+        Title = "HIGH SPEED AND JP",
+        Description = "Makes u Sonic and A Trampoline",
+        Callback = function()
+            Window:Dialog({
+                Title = "WARNING",
+                Content = "USE T To toggle speed and jp",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                        workspace.workspace.boundary:Destroy()
+                           local humanoid = workspace.soldier_model:WaitForChild("fpv_humanoid")
+local isActive = false 
+
+
+local function enforceWalkSpeed()
+    while true do
+        if isActive then
+            if humanoid.WalkSpeed ~= 50 then
+                humanoid.WalkSpeed = 50
+            end
+        end
+        wait(0.1) 
+    end
+end
+
+
+humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+    if isActive then
+        humanoid.WalkSpeed = 50
+        humanoid.JumpHeight = 190
+        workspace.workspace.boundary:Destroy()
+    end
+end)
+
+
+spawn(enforceWalkSpeed)
+
+
+local function toggleWalkSpeed()
+    isActive = not isActive 
+    print("WalkSpeed enforcement is now " .. (isActive and "active" or "inactive"))
+end
+
+
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.T then 
+            toggleWalkSpeed()
+        end
+    end
+end)
+
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+   
+
+   
+
+
+
+
+-- Send a notification saying that the script is loading
+game.StarterGui:SetCore("SendNotification", {
+   Title = "INFO",
+   Text = "ARGON ESP Loaded",
+   Icon = "",
+   Duration = 5
+})
+
+   local RunService = game:GetService("RunService")
+
+local highlightEnabled = false  -- Initial state of highlights
+
+-- Function to toggle highlight state
+local function toggleHighlights()
+    highlightEnabled = not highlightEnabled
+end
+
+-- Function to add or update Highlight to each soldier_model
+local function updateHighlights()
+    if not highlightEnabled then
+        -- If highlights are disabled, remove all existing highlights
+        for _, model in pairs(game.Workspace:GetChildren()) do
+            if model.Name == "soldier_model" and model:IsA("Model") then
+                local highlight = model:FindFirstChildOfClass("Highlight")
+                if highlight then
+                    highlight:Destroy()  -- Remove highlight if highlights are disabled
+                end
+            end
+        end
+        return  -- Exit the function if highlights are disabled
+    end
+
+    for _, model in pairs(game.Workspace:GetChildren()) do
+        if model.Name == "soldier_model" and model:IsA("Model") then
+            -- Check if the model has a child named fpv_rig
+            if not model:FindFirstChild("fpv_rig") then
+                -- Check if Highlight already exists
+                local highlight = model:FindFirstChildOfClass("Highlight")
+                if not highlight then
+                    highlight = Instance.new("Highlight")
+                    highlight.Parent = model
+                end
+                
+                -- Check for the friendly_marker child
+                local friendlyMarker = model:FindFirstChild("friendly_marker")
+                if friendlyMarker then
+                    -- Set the highlight color to green
+                    highlight.FillColor = Color3.fromRGB(0, 255, 0)  -- Green color
+                    highlight.OutlineColor = Color3.fromRGB(0, 200, 0)  -- Optional: Darker green outline
+                else
+                    -- Set a default color for models without friendly_marker
+                    highlight.FillColor = Color3.fromRGB(255, 0, 0)  -- Example: Red color for no friendly_marker
+                    highlight.OutlineColor = Color3.fromRGB(200, 0, 0)  -- Optional: Darker red outline
+                end
+                highlight.Enabled = true  -- Ensure highlight is enabled
+            else
+                -- If fpv_rig exists, ensure highlight is not present
+                local highlight = model:FindFirstChildOfClass("Highlight")
+                if highlight then
+                    highlight:Destroy()  -- Remove highlight if fpv_rig is present
+                end
+            end
+        end
+    end
+end
+
+-- Connect the function to RenderStepped
+RunService.RenderStepped:Connect(updateHighlights)
+
+-- Example usage: toggle highlights when a key is pressed (e.g., "H")
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.H and not gameProcessed then
+        toggleHighlights()
+    end
+end)
+
+
+    local ESP = Tabs.Visuals:AddToggle("MyESP", {Title = "ESP", Default = false })
+
+
+       ESP:OnChanged(function()
+
+        if ESP.Value == true then
+        highlightEnabled = true
+        else
+        highlightEnabled = false
+        end
+        
+    end)
+
+    Options.MyESP:SetValue(false)
+
+
+
+
+    local Chams = Tabs.Visuals:AddToggle("Mychams", {Title = "Chams", Default = false })
+
+
+       Chams:OnChanged(function()
+    end)
+
+    local ChamsColorpicker = Tabs.Visuals:AddColorpicker("ChamsColorpicker", {
+        Title = "Chams color",
+        Transparency = 0,
+        Default = Color3.fromRGB(190, 95, 255)
+    })
+end
+
+
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- InterfaceManager (Allows you to have a interface managment system)
+
+-- Hand the library over to our managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+-- Ignore keys that are used by ThemeManager.
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings()
+
+-- You can add indexes of elements the save manager should ignore
+SaveManager:SetIgnoreIndexes({})
+
+-- use case for doing it this way:
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "ARGON",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config
+-- which has been marked to be one that auto loads!
+SaveManager:LoadAutoloadConfig()
