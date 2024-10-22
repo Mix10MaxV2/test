@@ -1,0 +1,42 @@
+local humanoid = workspace.soldier_model:WaitForChild("fpv_humanoid")
+local isActive = false 
+
+
+local function enforceWalkSpeed()
+    while true do
+        if isActive then
+            if humanoid.WalkSpeed ~= 50 then
+                humanoid.WalkSpeed = 50
+            end
+        end
+        wait(0.1) 
+    end
+end
+
+
+humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+    if isActive then
+        humanoid.WalkSpeed = 50
+        humanoid.JumpHeight = 190
+        workspace.workspace.boundary:Destroy()
+    end
+end)
+
+
+spawn(enforceWalkSpeed)
+
+
+local function toggleWalkSpeed()
+    isActive = not isActive 
+    print("WalkSpeed enforcement is now " .. (isActive and "active" or "inactive"))
+end
+
+
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.T then 
+            toggleWalkSpeed()
+        end
+    end
+end)
